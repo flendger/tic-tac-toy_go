@@ -2,13 +2,21 @@ package human
 
 import (
 	"fmt"
+	"tic-tac-toy/game/move"
 	"tic-tac-toy/human/moveresolver"
 )
 
 type Human struct{}
 
-func (r *Human) Move() (line, col uint8, err error) {
+func (r *Human) GetMarker() string {
+	return "X"
+}
 
+func (r *Human) GetName() string {
+	return "Human"
+}
+
+func (r *Human) Move() (*move.Move, error) {
 	for {
 		fmt.Print("Enter move [line col] (\\q - for exit): ")
 
@@ -20,7 +28,7 @@ func (r *Human) Move() (line, col uint8, err error) {
 		_, err := fmt.Scanln(&first, &second)
 		if err != nil {
 			if first == "\\q" {
-				return 0, 0, fmt.Errorf("exit")
+				return nil, fmt.Errorf("exit")
 			} else {
 				continue
 			}
@@ -31,6 +39,6 @@ func (r *Human) Move() (line, col uint8, err error) {
 			continue
 		}
 
-		return line, col, nil
+		return &move.Move{Line: line, Col: col}, nil
 	}
 }

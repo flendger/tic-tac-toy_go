@@ -3,59 +3,41 @@ package game
 import (
 	"fmt"
 	"tic-tac-toy/field"
-	"tic-tac-toy/human"
-	"tic-tac-toy/robot"
+	"tic-tac-toy/game/player"
 )
 
 type Game struct{}
 
-func (receiver Game) Run(human *human.Human, robot *robot.Robot) {
-	gameField := field.CreateField()
+func (g *Game) Run(players ...player.Player) {
+	gameField := field.New()
 
 	for {
-		for {
-			humanLine, humanCol, err := human.Move()
-			if err != nil {
+		for _, currentPlayer := range players {
+			for {
+				move, err := currentPlayer.Move()
+				if err != nil {
+					return
+				}
+
+				moveErr := gameField.SetItem(move.Line, move.Col, currentPlayer.GetMarker())
+				if moveErr == nil {
+					break
+				}
+			}
+
+			if gameField.CheckWin(currentPlayer.GetMarker()) {
+				gameField.PrintField()
+				fmt.Println(currentPlayer.GetName(), "win")
 				return
 			}
-			err = gameField.SetItem(humanLine, humanCol, "X")
-			if err == nil {
-				break
+
+			if gameField.CheckDraw() {
+				gameField.PrintField()
+				fmt.Println("Draw!!!")
+				return
 			}
-		}
 
-		if gameField.CheckWin("X") {
 			gameField.PrintField()
-			fmt.Println("Human win")
-			break
 		}
-
-		if gameField.CheckDraw() {
-			gameField.PrintField()
-			fmt.Println("Draw!!!")
-			break
-		}
-
-		for {
-			robotLine, robotCol := robot.Move()
-			err := gameField.SetItem(robotLine, robotCol, "O")
-			if err == nil {
-				break
-			}
-		}
-
-		if gameField.CheckWin("O") {
-			gameField.PrintField()
-			fmt.Println("Bot win")
-			break
-		}
-
-		if gameField.CheckDraw() {
-			gameField.PrintField()
-			fmt.Println("Draw!!!")
-			break
-		}
-
-		gameField.PrintField()
 	}
 }

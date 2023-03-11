@@ -1,13 +1,23 @@
 package robot
 
-import "math/rand"
+import (
+	"math/rand"
+	"tic-tac-toy/game/move"
+)
 
 type Robot struct{}
 
-func (r *Robot) Move() (line, col uint8) {
+func (r *Robot) GetMarker() string {
+	return "O"
+}
 
-	line = uint8(rand.Intn(3)) + 1
-	col = uint8(rand.Intn(3)) + 1
+func (r *Robot) GetName() string {
+	return "Bot"
+}
 
-	return
+func (r *Robot) Move() (*move.Move, error) {
+	line := uint8(rand.Intn(3)) + 1
+	col := uint8(rand.Intn(3)) + 1
+
+	return &move.Move{Line: line, Col: col}, nil
 }

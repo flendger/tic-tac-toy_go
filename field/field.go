@@ -98,7 +98,7 @@ func (f *GameField) CheckDraw() bool {
 	return true
 }
 
-func CreateField() *GameField {
+func New() *GameField {
 	newField := new(GameField)
 	newField.initField()
 
